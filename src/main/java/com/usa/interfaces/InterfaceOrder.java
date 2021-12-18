@@ -9,15 +9,8 @@ import java.util.List;
 
 public interface InterfaceOrder extends MongoRepository<Order,Integer> {
 
-    @Query("{'salesMan.zone': ?0}")
-    List<Order> findByZone(final String country);
-
-    @Query("{status: ?0}")
-    List<Order> findByStatus(final String status);
-
-    List<Order> findByRegisterDayAndSalesMan_id(Date fecha, Integer id);
-
-    List<Order> findBySalesMan_Id(Integer id);
-
-    List<Order> findByStatusAndSalesMan_id(String status,Integer id);
+    List<Order> findBySalesManZone(String zone);
+    List<Order> findBySalesManId(Integer id);
+    List<Order> findBySalesManIdAndStatus(Integer id, String status);
+    List<Order> findByRegisterDayAndSalesManId(Date registerDay, Integer id);
 }

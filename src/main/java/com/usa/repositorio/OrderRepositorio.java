@@ -5,7 +5,8 @@ import com.usa.modelo.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,59 +17,46 @@ public class OrderRepositorio {
     @Autowired
     private InterfaceOrder interfaceOrder;
 
-    public List<Order> getAll() {
-
-        return (List<Order>) interfaceOrder.findAll();
+    public List<Order> getAll(){
+        return interfaceOrder.findAll();
     }
 
-    public Optional<Order> getOrderById(Integer id){
-
+    public Optional<Order> getOrder(int id){
         return interfaceOrder.findById(id);
-
     }
 
     public Order save(Order order) {
-
         return interfaceOrder.save(order);
     }
 
-    public void deleteOrder(Integer id){
-
-        interfaceOrder.deleteById(id);
-
+    public void update(Order order){
+        interfaceOrder.save(order);
     }
 
-    public List<Order> getZone(String country){
-
-        return interfaceOrder.findByZone(country);
-
+    public void delete(Order order){
+        interfaceOrder.delete(order);
     }
 
-    public List<Order> getStatus(String status){
-
-        return interfaceOrder.findByStatus(status);
-
+    public List<Order> getOrderByZone(String zone){
+        return interfaceOrder.findBySalesManZone(zone);
     }
 
-    public List<Order> findBySalesManId(Integer id){
-
-
-        return interfaceOrder.findBySalesMan_Id(id);
-
+    public List<Order> getBySalesManId(Integer id){
+        return interfaceOrder.findBySalesManId(id);
     }
 
-    public List<Order> getDate(Date fecha, Integer id){
-
-        return interfaceOrder.findByRegisterDayAndSalesMan_id(fecha,id);
-
+    public List<Order> getBySalesManIdAndStatus(Integer id, String status){
+        return interfaceOrder.findBySalesManIdAndStatus(id, status);
     }
 
-    public List<Order> getStatusById(String status, Integer id){
-
-        return interfaceOrder.findByStatusAndSalesMan_id(status, id);
-
+    public List<Order> getByRegisterDayAndSalesManId(String registerDay, Integer id){
+        try {
+            return interfaceOrder.findByRegisterDayAndSalesManId(new SimpleDateFormat("yyyy-MM-dd").parse(registerDay), id);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
-
 
 
 }

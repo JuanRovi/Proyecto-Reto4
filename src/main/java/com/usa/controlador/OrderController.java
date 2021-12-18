@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
+
 import java.util.List;
 
 
@@ -20,84 +20,39 @@ import java.util.List;
 public class OrderController {
      @Autowired
     private OrderService service;
-
-    
-    /**
-     * 
-     * @return 
-     */
-    @GetMapping("/all")
-    public List<Order> getOrder() {
-
-        return service.getAll();
-
-    }
-    
-    @GetMapping("/{id}")
-    public Order getById(@PathVariable("id") Integer id){
-        
-        return service.getById(id);
-    
-    }
-    
-    
-    /**
-     * 
-     * @param clone
-     * @return 
-     */
-    @PostMapping("/new")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Order save(@RequestBody Order order){
-        System.out.println(order);
-    return service.save(order);
-    
-    }
-    
-
-    
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Integer delete(@PathVariable Integer id){
-    
-       return  service.deleteOrder(id);
-    
+    public void save(@RequestBody Order order){
+        service.save(order);
     }
 
-    
-    @GetMapping("/zona/{zone}")
-    public List<Order> getByZone(@PathVariable String zone){
-        return service.getZone(zone);
-    
-    }
-    
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.CREATED)
-    public Order update(@RequestBody Order order){
-        return service.update(order);
-    
+    public void update(@RequestBody Order order){
+        service.update(order);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public boolean delete(@PathVariable("id") int id) {
+        return service.delete(id);
+    }
+
+    @GetMapping("/zona/{zone}")
+    public List<Order> getOrdersByZone(@PathVariable("zone") String zone){
+        return service.getOrderByZone(zone);
     }
 
     @GetMapping("/salesman/{id}")
-    public List<Order> getBySalesManId(@PathVariable Integer id){
-
-        return service.findBySalesManId(id);
-
+    public List<Order> getSalesManById(@PathVariable("id") int id){
+        return service.getBySalesManId(id);
     }
 
-
-    @GetMapping("/date/{fecha}/{id}")
-    public List<Order> getDate (@PathVariable String fecha,@PathVariable Integer id) throws ParseException {
-
-        return service.getRegisterDay(fecha,id);
-
+    @GetMapping("/state/{status}/{id}")
+    public List<Order> getBySalesManIdAndStatus(@PathVariable("status") String status, @PathVariable("id") Integer id){
+        return service.getBySalesManIdAndStatus(id, status);
     }
 
-
-    @GetMapping("/state/{state}/{id}")
-    public List<Order> getStatusById (@PathVariable("state") String state,@PathVariable("id") Integer id){
-
-        return service.getStatusById(state, id);
-
+    @GetMapping("/date/{registerDay}/{id}")
+    public List<Order> getByRegisterDayAndSalesManId(@PathVariable("registerDay")String  registerDay,@PathVariable("id") Integer id){
+        return service.getByRegisterDayAndSalesManId(registerDay, id);
     }
 }

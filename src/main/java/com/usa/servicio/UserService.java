@@ -15,181 +15,135 @@ import java.util.Optional;
  */
 @Service
 public class UserService {
-
-
     /**
      *
-     * @param user
+     *
      */
      @Autowired
     private UserRepositorio userRepository;
     /**
-     *
-     * @param user
+     * Get = List of All Users
+     * @return
      */
     public List<User> getAll() {
         return userRepository.getAll();
     }
+
     /**
-     *
+     * Get = User by its id
      * @param id
+     * @return
      */
-    public Optional<User> getUserById(int id) {
-        return userRepository.getUserById(id);
+    public Optional<User> getUser(int id) {
+        return userRepository.getUser(id);
     }
 
     /**
-     *
+     * This method saves a new user
      * @param user
+     * @return
      */
-    public User registrar(User user) {
+    public User save(User user) {
         if (user.getId() == null) {
-            if (emailExists(user.getEmail()) == false) {
-                return userRepository.save(user);
+            return user;
+        } else {
+            Optional<User> dbUser = userRepository.getUser(user.getId());
+            if (dbUser.isEmpty()) {
+                if (emailExists(user.getEmail()) == false) {
+                    return userRepository.save(user);
+                } else {
+                    return user;
+                }
             } else {
                 return user;
             }
-        } else {
-            return user;
         }
     }
+
     /**
-     *
-     * @param email
+     * This method updates a user
+     * @param user
+     * @return
      */
-    public boolean emailExists(String email){
+    public User update(User user) {
+        if (user.getId() != null) {
+            Optional<User> dbUser = userRepository.getUser(user.getId());
+            if (!dbUser.isEmpty()) {
+                if (user.getIdentification() != null) {
+                    dbUser.get().setIdentification(user.getIdentification());
+                }
+                if (user.getName() != null) {
+                    dbUser.get().setName(user.getName());
+                }
 
-        Optional<User> usuarios = userRepository.emailExists(email);
+                if (user.getBirthtDay() != null){
+                    dbUser.get().setBirthtDay(user.getBirthtDay());
+                }
 
-        if (usuarios.isEmpty()){
-
-            return false;}
-
-        else{
-
-
-            return true;}
-
+                if (user.getMonthBirthtDay() != null){
+                    dbUser.get().setMonthBirthtDay(user.getMonthBirthtDay());
+                }
+                if (user.getAddress() != null) {
+                    dbUser.get().setAddress(user.getAddress());
+                }
+                if (user.getCellPhone() != null) {
+                    dbUser.get().setCellPhone(user.getCellPhone());
+                }
+                if (user.getEmail() != null) {
+                    dbUser.get().setEmail(user.getEmail());
+                }
+                if (user.getPassword() != null) {
+                    dbUser.get().setPassword(user.getPassword());
+                }
+                if (user.getZone() != null) {
+                    dbUser.get().setZone(user.getZone());
+                }
+                if (user.getType() != null) {
+                    dbUser.get().setType(user.getType());
+                }
+                userRepository.update(dbUser.get());
+                return dbUser.get();
+            } else {
+                return user;
+            }
+        }
+        return user;
     }
 
+    /**
+     * This method checks if an email exists
+     * @param email
+     * @return
+     */
+    public boolean emailExists(String email) {
+        return userRepository.emailExists(email);
+    }
 
     /**
-     *
+     * This method deletes a User
+     * @param userId
+     * @return
+     */
+    public boolean delete(int userId) {
+        Boolean userBoolean = getUser(userId).map(user -> {
+            userRepository.delete(user);
+            return true;
+        }).orElse(false);
+        return userBoolean;
+    }
+
+    /**
+     * This method verifies if a user is registered by its email and password
      * @param email
      * @param password
+     * @return
      */
-    public User autenticarUsuario(String email, String password) {
-        Optional<User> usuario = userRepository.autenticarUsuario(email, password);
-
-        if (usuario.isEmpty()) {
+    public User authenticateUser(String email, String password){
+        Optional<User> user = userRepository.authenticateUser(email, password);
+        if (user.isEmpty()){
             return new User();
-        } else {
-            return usuario.get();
         }
+        return user.get();
     }
-
-    /**
-     *
-     * @param user
-     * @return
-     */
-    public User update(User user){
-
-        if(user.getId()!=null){
-            Optional<User> userExist = userRepository.getUserById(user.getId());
-            if(userExist.isPresent()){
-                if(user.getIdentification()!=null){
-                    userExist.get().setIdentification(user.getIdentification());
-                }
-                if(user.getName()!=null){
-                    userExist.get().setName(user.getName());
-                }
-                if (user.getBirthtDay()!=null){
-                    userExist.get().setBirthtDay(user.getBirthtDay());
-                 }
-               if (user.getMonthBirthtDay()!=null){
-                  userExist.get().setMonthBirthtDay(user.getMonthBirthtDay());
-               }
-
-                if(user.getAddress()!=null){
-                    userExist.get().setAddress(user.getAddress());
-                }
-                if(user.getCellPhone()!=null){
-                    userExist.get().setCellPhone(user.getCellPhone());
-                }
-                if(user.getEmail()!=null){
-                    userExist.get().setEmail(user.getEmail());
-                }
-                if(user.getPassword()!=null){
-                    userExist.get().setPassword(user.getPassword());
-                }
-                if(user.getZone()!=null){
-                    userExist.get().setZone(user.getZone());
-                }
-                if(user.getType()!=null){
-                    userExist.get().setType(user.getType());
-                }
-                return userRepository.save(userExist.get());
-            }else{
-                return user;
-            }
-        }else{
-            return user;
-        }
-    }
-
-    /**
-     *
-     * @param  id
-     * @return
-     */
-    public Integer deleteById(Integer id){
-        Optional<User> user = userRepository.getUserById(id);
-        if(user.isPresent()){
-            userRepository.deleteById(id);
-            return null;
-        }else{
-            return id;
-        }
-    }
-
-    /**
-     *
-     * @param user
-     * @return
-     */
-    public User save(User user){
-
-        if(user.getIdentification() == null || user.getName() == null || user.getAddress() == null
-                || user.getCellPhone() == null || user.getEmail() == null || user.getPassword() == null
-                || user.getZone() == null || user.getType() == null){
-
-            return user;
-
-        }else{
-
-            Optional<User> existUser = userRepository.getNPEPSI(user.getIdentification(), user.getCellPhone(), user.getEmail(), user.getPassword(),user.getName());
-            if(existUser.isEmpty()){
-
-                return userRepository.save(user);
-            }
-            else{
-
-                return user;
-
-            }
-
-        }
-    }
-    /**
-     *
-     * @param monthBirthtDay
-     */
-
-
-    public List<User> birthtDayList(String monthBirthtDay) {
-        return userRepository.birthtDayList(monthBirthtDay);
-    }
-
 
 }

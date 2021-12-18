@@ -13,7 +13,5 @@ import java.util.Optional;
  */
 public interface InterfaceClone extends MongoRepository<Clone, String> {
 
-    void deleteById(Integer id);
-
     Optional<Clone> findById(int id);
 }

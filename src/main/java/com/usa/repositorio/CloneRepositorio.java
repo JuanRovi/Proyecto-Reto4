@@ -18,24 +18,23 @@ public class CloneRepositorio {
     @Autowired
     private InterfaceClone repository;
 
-    public List<Clone> getAll() {
+    public List<Clone> getAll(){
         return repository.findAll();
     }
 
-    public Optional<Clone>  getCloneById(int id){
-
+    public Optional<Clone> getClone(int id){
         return repository.findById(id);
-
     }
 
-    public Clone save(Clone clone) {
-
+    public Clone save(Clone clone){
         return repository.save(clone);
     }
 
-    public void delete(Integer id){
+    public void update(Clone clone){
+        repository.save(clone);
+    }
 
-        repository.deleteById(id);
-
+    public void delete(Clone clone){
+        repository.delete(clone);
     }
 }

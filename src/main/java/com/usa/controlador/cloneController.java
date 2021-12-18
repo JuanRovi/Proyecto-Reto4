@@ -18,58 +18,36 @@ import java.util.Optional;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 
 public class cloneController {
-    
+
     @Autowired
     private CloneService service;
 
-    
-    /**
-     * 
-     * @return 
-     */
     @GetMapping("/all")
-    public List<Clone> getClone() {
-
+    public List<Clone> getAll(){
         return service.getAll();
+    }
 
-    }
-    
     @GetMapping("/{id}")
-    public Optional<Clone> getById(@PathVariable int id){
-    
-        return service.getById(id);
-    
+    public Optional<Clone> getClone(@PathVariable("id") int id){
+        return service.getClone(id);
     }
-    
-    
-    /**
-     * 
-     * @param clone
-     * @return 
-     */
+
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.CREATED)
-    public Clone save(@RequestBody Clone clone){
-        System.out.println(clone);
-    return service.save(clone);
-    
+    public void save(@RequestBody Clone clone){
+        service.save(clone);
     }
-    
-    
+
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.CREATED)
     public Clone update(@RequestBody Clone clone){
-    
-    return service.update(clone);
-    
+        return service.update(clone);
     }
-    
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Integer delete(@PathVariable Integer id){
-    
-       return  service.deleteClone(id);
-    
+    public boolean delete(@PathVariable("id") int id){
+        return service.delete(id);
     }
     
 }

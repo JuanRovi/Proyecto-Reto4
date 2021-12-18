@@ -28,87 +28,67 @@ public class UserController {
     private UserService service;
 
     /**
-     *
-     * @param
+
      * @return
      */
     @GetMapping("/all")
-    public List<User> getAll() {
+    public List<User> getAll(){
         return service.getAll();
     }
 
-
-
-    @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable int id){
-
-        return service.getUserById(id);
-
-    }
-
     /**
-     *
-     * @param user
+     * @param id
      * @return
+     */
+    @GetMapping("/{id}")
+    public Optional<User> getUser(@PathVariable("id") int id){
+        return service.getUser(id);
+    }
+    /**
+     * @param user
      */
     @PostMapping("/new")
     @ResponseStatus(HttpStatus.CREATED)
-    public User save(@RequestBody User user) {
-        return service.save(user);
+    public void save(@RequestBody User user){
+        service.save(user);
     }
 
     /**
-     *
-     * @param email
-     * @param password
-     */
-    @GetMapping("/{email}/{password}")
-    public User autenticarUsuario(@PathVariable("email") String email, @PathVariable("password") String password) {
-        return service.autenticarUsuario(email, password);
-    }
-
-    /**
-     *
-     * @param email
-     * @return
-     */
-    @GetMapping("/emailexist/{email}")
-    public boolean existeEmail(@PathVariable("email") String email) {
-        return service.emailExists(email);
-    }
-
-    /***
-     *
      * @param user
      * @return
      */
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.CREATED)
-    public User update (@RequestBody User user){
+    public User update(@RequestBody User user){
         return service.update(user);
     }
 
-
     /**
-     *
      * @param id
      * @return
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Integer deleteById(@PathVariable("id") Integer id){
-        return service.deleteById(id);
+    public boolean delete(@PathVariable("id") int id){
+        return service.delete(id);
     }
 
-
     /**
-     *
-     * @param monthBirthtDay
+     * @param email
+     * @param password
      * @return
      */
+    @GetMapping("/{email}/{password}")
+    public User authenticateUser(@PathVariable("email") String email, @PathVariable("password") String password){
+        return service.authenticateUser(email,password);
+    }
 
-    @GetMapping("/birthday/{month}")
-    public List<User> birthtDayList(@PathVariable("month") String monthBirthtDay) {
-        return service.birthtDayList(monthBirthtDay);
+    /**
+     * @param email
+     * @return
+     */
+    @GetMapping("/emailexist/{email}")
+    public boolean emailExists (@PathVariable("email") String email){
+        return service.emailExists(email);
     }
 }
